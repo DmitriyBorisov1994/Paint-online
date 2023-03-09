@@ -1,31 +1,30 @@
-import React from 'react'
 import './../styles/toolbar.scss'
-import { IoBrushSharp, IoSquare, IoRadioButtonOffOutline, IoColorPaletteOutline, IoPencilOutline, IoArrowUndoCircleOutline, IoArrowRedoCircleOutline, IoSaveOutline } from "react-icons/io5";
-import { GrErase } from "react-icons/gr";
+import { IoBrushSharp, IoSquare, IoRadioButtonOffOutline, IoArrowUndoCircleOutline, IoArrowRedoCircleOutline, IoSaveOutline } from "react-icons/io5";
+import { BsFillEraserFill } from "react-icons/bs";
 import toolState from '../store/toolState';
 import canvasState from '../store/canvasState';
 import Brush from '../tools/brush';
 import Rect from '../tools/rect';
 import Circle from '../tools/circle';
 import Rubber from '../tools/rubber';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 const Toolbar = () => {
-
-   const changeColor = (e: React.ChangeEvent<HTMLInputElement>) => {
-      toolState.setFillColor(e.target.value)
-      toolState.setStrokeColor(e.target.value)
-   }
-
    return (
       <div className='toolbar'>
-         <button className='toolbar_btn' onClick={() => toolState.setTool(new Brush(canvasState.canvas))}><IoBrushSharp /></button>
-         <button className='toolbar_btn' onClick={() => toolState.setTool(new Rect(canvasState.canvas))}><IoSquare /></button>
-         <button className='toolbar_btn' onClick={() => toolState.setTool(new Circle(canvasState.canvas))}><IoRadioButtonOffOutline /></button>
-         <button className='toolbar_btn' onClick={() => toolState.setTool(new Rubber(canvasState.canvas))}><GrErase /></button>
-         <input onChange={(e) => changeColor(e)} type='color' className='toolbar_btn' />
-         <button className='toolbar_btn' style={{ marginLeft: 'auto' }} onClick={() => canvasState.undo()}><IoArrowUndoCircleOutline /></button>
-         <button className='toolbar_btn' onClick={() => canvasState.redo()}><IoArrowRedoCircleOutline /></button>
-         <button className='toolbar_btn' style={{ marginRight: '10px' }}><IoSaveOutline /></button>
+         <h1 className="display-3 text-dark fw-bold">drawer</h1>
+         <ButtonGroup>
+            <Button size='lg' variant='outline-primary' className='toolbar_btn' onClick={() => toolState.setTool(new Brush(canvasState.canvas))}><IoBrushSharp /></Button>
+            <Button size='lg' variant='outline-primary' className='toolbar_btn' onClick={() => toolState.setTool(new Rect(canvasState.canvas))}><IoSquare /></Button>
+            <Button size='lg' variant='outline-primary' className='toolbar_btn' onClick={() => toolState.setTool(new Circle(canvasState.canvas))}><IoRadioButtonOffOutline /></Button>
+            <Button size='lg' variant='outline-primary' className='toolbar_btn' onClick={() => toolState.setTool(new Rubber(canvasState.canvas))}><BsFillEraserFill /></Button>
+         </ButtonGroup>
+         <ButtonGroup>
+            <Button size='lg' variant='outline-primary' className='toolbar_btn' onClick={() => canvasState.undo()}><IoArrowUndoCircleOutline /></Button>
+            <Button size='lg' variant='outline-primary' className='toolbar_btn' onClick={() => canvasState.redo()}><IoArrowRedoCircleOutline /></Button>
+            <Button size='lg' variant='outline-primary' className='toolbar_btn'><IoSaveOutline /></Button>
+         </ButtonGroup>
       </div>
    )
 }

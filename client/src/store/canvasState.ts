@@ -4,6 +4,7 @@ class CanvasState {
    canvas: HTMLCanvasElement | null = null
    undoList: string[] = []
    redoList: string[] = []
+   userName: string = ''
    constructor() {
       makeAutoObservable(this)
    }
@@ -15,6 +16,9 @@ class CanvasState {
    }
    pushToRedo(data: string) {
       this.redoList.push(data)
+   }
+   setUserName(name: string) {
+      this.userName = name
    }
    undo() {
       if (this.canvas) {

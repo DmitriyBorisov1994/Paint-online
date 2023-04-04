@@ -12,6 +12,10 @@ app.ws('/', (ws, req) => {
             case "connection":
                 connectionHandler(ws, msg)
                 break
+            case "draw":
+                connectionHandler(ws, msg)
+                break
+
         }
     })
 })

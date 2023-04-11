@@ -2,6 +2,8 @@ import { makeAutoObservable } from "mobx";
 
 class CanvasState {
    canvas: HTMLCanvasElement | null = null
+   socket: WebSocket | null = null
+   sessionId: string | null = null
    undoList: string[] = []
    redoList: string[] = []
    userName: string = ''
@@ -16,6 +18,12 @@ class CanvasState {
    }
    pushToRedo(data: string) {
       this.redoList.push(data)
+   }
+   setSocket(socket: WebSocket) {
+      this.socket = socket
+   }
+   setSessionId(id: string) {
+      this.sessionId = id
    }
    setUserName(name: string) {
       this.userName = name

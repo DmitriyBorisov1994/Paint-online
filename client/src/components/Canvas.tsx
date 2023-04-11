@@ -8,6 +8,8 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Form } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
+import Rect from '../tools/rect'
+
 const Canvas = observer(() => {
 
    const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -17,13 +19,16 @@ const Canvas = observer(() => {
 
    useEffect(() => {
       canvasState.setCanvas(canvasRef.current)
-      if (canvasRef.current) toolState.setTool(new Brush(canvasRef.current))
    }, [])
 
    useEffect(() => {
-      if (canvasState.userName) {
+      if (canvasState.userName && id) {
          const socket = new WebSocket(`ws://localhost:5000/`)
-         console.log('подключение установлено')
+         console.log('подключение установлено' + socket)
+         canvasState.setSocket(socket)
+         console.log(canvasState.socket)
+         canvasState.setSessionId(id)
+         if (canvasRef.current && canvasState.socket && canvasState.sessionId) toolState.setTool(new Brush(canvasRef.current, canvasState.socket, canvasState.sessionId))
          socket.onopen = () => {
             socket.send(JSON.stringify({
                id,
@@ -32,11 +37,37 @@ const Canvas = observer(() => {
             }))
          }
          socket.onmessage = (e) => {
-            console.log(e.data)
+            let msg = JSON.parse(e.data)
+            console.log(msg)
+            switch (msg.method) {
+               case "connection":
+                  console.log(`user ${msg.userName} is connected`)
+                  break;
+               case "draw":
+                  drawHandler(msg)
+                  break;
+            }
          }
       }
    }, [canvasState.userName])
 
+
+   const drawHandler = (msg: any) => {
+      const figure = msg.figure
+      const ctx = canvasRef.current?.getContext('2d')
+      if (ctx)
+         switch (figure.type) {
+            case 'brush':
+               Brush.draw(ctx, figure.x, figure.y)
+               break;
+            case 'rect':
+               Rect.staticDraw(ctx, figure.x, figure.y, figure.width, figure.height, figure.color)
+               break;
+            case 'finish':
+               ctx.beginPath()
+               break;
+         }
+   }
 
    const mouseDownHandler = () => {
       if (canvasRef.current) {
@@ -56,7 +87,6 @@ const Canvas = observer(() => {
       handleClose()
    }
 
-
    return (
       <div className='canvas'>
          <Modal show={show} onHide={handleClose}>
@@ -66,7 +96,7 @@ const Canvas = observer(() => {
             <Modal.Body>
                <Form>
                   <Form.Label>Ваше имя:</Form.Label>
-                  <Form.Control ref={userNameRef} type="text" placeholder="Введите ваше имя" />
+                  <Form.Control ref={userNameRef} type="text" placeholder="Введите ваше имя" required />
                </Form>
             </Modal.Body>
             <Modal.Footer>
@@ -77,7 +107,7 @@ const Canvas = observer(() => {
          </Modal>
          <canvas
             onMouseDown={() => { mouseDownHandler() }}
-            ref={canvasRef} width={800} height={400}
+            ref={canvasRef} width={canvasRef.current?.parentElement?.clientWidth} height={canvasRef.current?.parentElement?.clientHeight}
             style={{ transform: `scale(${scale})` }}
          />
       </div>

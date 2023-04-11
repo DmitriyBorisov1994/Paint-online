@@ -9,8 +9,8 @@ export default class Rect extends Tool {
    width: number = 0
    height: number = 0
 
-   constructor(canvas: HTMLCanvasElement | null) {
-      super(canvas)
+   constructor(canvas: HTMLCanvasElement | null, socket: WebSocket, sessionId: string) {
+      super(canvas, socket, sessionId)
       this.listen()
       this.saved = this.canvas?.toDataURL()
    }
@@ -25,6 +25,18 @@ export default class Rect extends Tool {
 
    mouseUpHandler(e: MouseEvent) {
       this.mouseDown = false
+      this.socket.send(JSON.stringify({
+         method: 'draw',
+         id: this.sessionId,
+         figure: {
+            type: 'rect',
+            x: this.startX,
+            y: this.startY,
+            width: this.width,
+            height: this.height,
+            color: this.ctx?.fillStyle
+         }
+      }))
    }
 
    mouseDownHandler(e: MouseEvent) {
@@ -60,4 +72,12 @@ export default class Rect extends Tool {
          }
       }
    }
+   static staticDraw(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, color: string) {
+      ctx.fillStyle = color
+      ctx.beginPath()
+      ctx.rect(x, y, w, h)
+      ctx.fill()
+      ctx.stroke()
+   }
+
 }

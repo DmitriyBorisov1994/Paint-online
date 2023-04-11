@@ -1,12 +1,16 @@
 export default class Tool {
    canvas;
    ctx;
-   constructor(canvas: HTMLCanvasElement | null) {
+   socket;
+   sessionId
+   constructor(canvas: HTMLCanvasElement | null, socket: WebSocket, sessionId: string) {
       if (canvas) {
          this.canvas = canvas
          this.ctx = canvas.getContext('2d')
          this.destroyEvents()
       }
+      this.socket = socket
+      this.sessionId = sessionId
    }
 
    set fillColor(color: string | CanvasGradient | CanvasPattern) {

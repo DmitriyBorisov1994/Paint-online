@@ -2,8 +2,8 @@ import Brush from "./brush";
 
 export default class Rubber extends Brush {
    mouseDown: boolean = false
-   constructor(canvas: HTMLCanvasElement | null) {
-      super(canvas)
+   constructor(canvas: HTMLCanvasElement | null, socket: WebSocket, sessionId: string) {
+      super(canvas, socket, sessionId)
    }
    draw(x: number, y: number) {
       if (this.ctx) {

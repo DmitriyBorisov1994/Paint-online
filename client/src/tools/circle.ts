@@ -9,8 +9,8 @@ export default class Circle extends Tool {
    width: number = 0
    height: number = 0
 
-   constructor(canvas: HTMLCanvasElement | null) {
-      super(canvas)
+   constructor(canvas: HTMLCanvasElement | null, socket: WebSocket, sessionId: string) {
+      super(canvas, socket, sessionId)
       this.listen()
       this.saved = this.canvas?.toDataURL()
    }
